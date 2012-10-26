@@ -1,0 +1,20 @@
+{%extends "base.html"%}
+
+{%block title%}{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/' >应用</a> </li>
+<li> <a href='/cluster/'>集群</a> </li>
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class="boxA">
+  <span>
+    {%if  mail%}我们在审批过后会向邮箱{{mail}}发送审批结果{%endif%}
+    感谢您的申请，返回<a href='/' >首页</a>  
+  </span>
+</div>
+
+{%endblock%}

@@ -1,0 +1,158 @@
+{%extends "base.html"%}
+
+{%block title%}Tair应用申请{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/' class='active'>应用</a> </li>
+<li> <a href='/cluster/'>集群</a> </li>
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class="boxA">
+  <div class="apply_wrapper">
+    <form id='apply' action="/app/apply" method="post" >
+      {% csrf_token %}
+      <h2>  请填写以下项目</h2>
+      <table cellpadding='5'> 
+        <!--
+        <tr>{{form.errors}} </tr>
+        -->
+        <tr>
+          <th><label for="id_name">应用名称*:</label></th>
+          <td>
+            {{form.name}}{{form.name.errors}}
+            <label class="tip">30个字符以内，字母开头，作为应用的key</label>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_describe">应用描述*:</label></th>
+          <td>
+            {{form.describe}}{{form.describe.errors}}
+            <label id="tip_describe" class="tip">
+            &nbsp;&nbsp;&nbsp;&nbsp;请尽量详细的描述业务场景，<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;以及对Tair的使用方式，以<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;方便我们更好的审批和分配<br/>
+            </label>
+          </td>
+          <!--
+            <div class="area_describe"><textarea id="id_describe" rows="10" cols="40" name="describe"></textarea></div>
+            <div class="tip_describe"><label class="tip">中英文均可，30个字符以内，尽量清楚的描述应用目标</label></div>
+          </td>
+            -->
+        </tr>
+        <tr>
+          <th><label for="id_qps">访问次数（次/秒）*:</label></th>
+          <td>
+            {{form.qps}}{{form.qps.errors}}
+            <label class="tip">估计每秒的访问次数</label>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_entry_num">条目数量*:</label></th>
+          <td>
+            {{form.entry_num}}{{form.entry_num.errors}}
+            <label class="tip">KV条目的总数量</label>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_capacity">配额容量(单位MB)*:</label></th>
+          <td>
+            {{form.capacity}}{{form.capacity.errors}}
+            <label class="tip">内存配额要求(增加配额请直接联系Tair答疑,不需要走申请流程)</label>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_cache_or_durable">是否需要持久化*:</label></th>
+          <td>
+           {{form.cache_or_durable}}
+            <img src="/static/images/why.gif" />
+            <label class='tip'>持久化到磁盘可以保证数据不丢失</label>
+           {{form.cache_or_durable.errors}}
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_trade_critical">Tair故障是否影响交易*:</label></th>
+          <td>
+           {{form.trade_critical}}
+            <!--<img src="/static/images/why.gif" />-->
+           {{form.trade_critical.errors}}
+          </td>
+          </tr>
+        <tr>
+          <th><label for="id_used_tair_before">是否已经使用Tair*:</label></th>
+          <td>
+           {{form.used_tair_before}}
+            <!--<img src="/static/images/why.gif" />-->
+           {{form.used_tair_before.errors}}
+          
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_data_source">后方是否有数据源*:</label></th>
+          <td>
+           {{form.data_source}}
+            <img src="/static/images/why.gif" />
+            <label class='tip'>数据丢失后,后方是否能从其他db重新产生数据</label>
+           {{form.data_source.errors}}
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_complicate_datastruct">是否需要使用set,list,map等数据结构*:</label></th>
+          <td>
+           {{form.complicate_datastruct}}
+            <img src="/static/images/why.gif" />
+            <label class='tip' id="tip_complicate_datastruct">vaule是否需要使用set,list,map等数据结构，接口参见<a target="_blank" href="http://baike.corp.taobao.com/index.php/API%E6%89%8B%E5%86%8C_JAVA#TairManagerHset_.E5.93.88.E5.B8.8C.E9.9B.86.E5.90.88.E6.93.8D.E4.BD.9C.28rdb.E4.B8.93.E7.94.A8.29">链接</a></label>
+           {{form.complicate_datastruct.errors}}
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_restful_api">是否需要使用Restful接口*:</label></th>
+          <td>
+           {{form.restful_api}}
+            <img src="/static/images/why.gif" />
+            <label class='tip' id="tip_restful_api">如果需要使用Restful接口，先阅读<a target="_blank" href="http://baike.corp.taobao.com/index.php/%E9%80%9A%E7%94%A8%E8%AE%A1%E6%95%B0%E5%99%A8">这里</a></label>
+           {{form.restful_api.errors}}
+          </td>
+        </tr>
+        <!--
+        <tr>
+          <th><label for="id_get_none_key">是否大量访问不存在key:</label></th>
+          <td>
+            <input type="checkbox" name="get_none_key" id="id_get_none_key" />
+            <img src="/static/images/why.gif" />
+            <label class='tip'>如果是用ldb持久化，访问大量不存在的key需要Bloomfilter的支持，否则对性能影响较大</label>
+          </td>
+        </tr>
+
+        <tr>
+          <th><label for="id_two_cluster">是否需要部署双机房:</label></th>
+          <td>
+            <input type="checkbox" name="two_cluster" id="id_two_cluster" />
+            <img src="/static/images/why.gif" />
+            <label class="tip" id="tip_two_cluster">双机房能有更好的容灾效果</label>
+          </td>
+        </tr>
+        -->
+        <tr>
+          <th><label for="id_username">应用负责人:</label></th>
+          <td><input type="text" name="username" id="id_username" value="{{tips.username}}"/></td>
+        </tr>
+        <tr>
+          <th><label for="id_email">电子邮件:</label></th>
+          <td><input type="text" name="email" id="id_email" value="{{tips.email}}"/>{{form.email.errors}}</td>
+        </tr>
+        <tr>
+          <th><label for="id_note">备注:</label></th>
+          <td>{{form.notes}}{{form.notes.errors}}</td>
+        </tr>
+      </table>
+      <input type="submit" value="提交申请"/>
+      <br/><label for="id_message">申请提交后我们需要1-2天时间审批部署，请耐心等待</label>
+    </form>
+  </div>
+</div>
+
+{%endblock%}
+

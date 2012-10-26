@@ -1,0 +1,89 @@
+{%extends "base.html"%}
+
+{%block js%}
+{%endblock%}
+
+{%block css%}
+<link type="text/css" rel="stylesheet" href="/static/style/demo_table.css"/>
+<link type="text/css" rel="stylesheet" href="/static/style/demo_page.css"/>
+{%endblock%}
+
+{%block title%}Tair Group 信息{%endblock%}
+
+{%block header%}
+{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/'><span>应用</span></a> </li>
+<li> <a href='/cluster/' class='active' ><span>集群</span></a> </li>
+<!--
+<li> <a href='/message/'>通知</a> </li>
+-->
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class="boxA">
+  <table cellpadding="0" cellspacing="0" border="0" class="display" width="100%" id="cluster_table">
+    <thead>
+      <tr>
+<!--
+        <th>ID</th>
+-->
+        <th>cluster/group</th>
+        <th>类型</th>
+        <th>config server</th>
+        <th>data server</th>
+        <th>应用数量</th>
+        <th>监控地址</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%for app in apps %}
+      <tr>
+          <td>{{app.id}}</td>
+          <td>{{group.name}}</td>
+          <td>{{group.type}}</td>
+          <td>{{group.cs|safe|linebreaks}}</td>
+          <td><a href="{{group.ds}}">{{group.ds_num}}</a></td>
+          <td>{{group.app|linebreaks}}</td>
+          <td>
+            {%if group.monitor0%}<a href="{{group.monitor0}}">机房1</a><br/>{%endif%}
+            {%if group.monitor1%}<a href="{{group.monitor1}}">机房2</a>{%endif%}
+          </td>
+          <td>
+<!--
+            <a href="/group/{{group.id}}/edit">编辑</a>
+            {%if group.cluster%}
+              <a href="/group/{{group.id}}/reviewedit">修改审批</a>
+            {%else%}
+              <a href="/group/{{group.id}}/review">审批</a>
+            {%endif%}
+-->
+          </td>
+      </tr>
+      {%endfor%}
+    </tbody>
+    <tfoot>
+      <tr>
+<!--
+        <th>ID</th>
+-->
+        <th>cluster/group</th>
+        <th>类型</th>
+        <th>config server</th>
+        <th>data server</th>
+        <th>应用数量</th>
+        <th>监控地址</th>
+        <th>操作</th>
+      </tr>
+    </tfoot>
+  </table> 
+  <div class="clear"></div>
+
+</div>
+
+{%endblock%}
+

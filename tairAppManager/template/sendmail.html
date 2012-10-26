@@ -1,0 +1,55 @@
+{%extends "base.html"%}
+
+{%block title%}Tair应用审批{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/'>应用</a> </li>
+<li> <a href='/cluster/'>集群</a> </li>
+
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class="boxA">
+  <form id='sendmail' action="." method="post" >
+    <label>以下是审批内容，确认后将向申请者{{applicant}}({{mail_address}})发送该邮件</label>
+    {% csrf_token %}
+    <table cellpadding='5'> 
+      <tr>
+        <th>
+          <label for="id_message">邮件内容:</label>
+        </th>
+        <td>
+          <textarea id="id_message" rows="15" cols="80" name="message">{% autoescape off %}{{base_mail}}{%endautoescape%}</textarea>
+        </td>
+      </tr>
+      <tr>
+        <th> </th>
+        <td> <input align='middle' type="submit" value="发送邮件"/> </td>
+      </tr>
+    </table>
+<!--
+    <input type="button" value="上一步"/>
+-->
+  </form>
+  <br/>
+    {% csrf_token %}
+    <table cellpadding='5'> 
+      <tr>
+        <th>
+          <label for="id_clip">剪切板:</label>
+        </th>
+        <td>
+	    <textarea id="id_clipboard" rows="20" cols="80">{{text|safe}}</textarea>
+        </td>
+      </tr>
+      <tr>
+        <th> </th>
+        <td> <input id="update_clipboard" name="{{reviewer}}" align='middle' type="submit" value="保存剪切板"/> </td>
+      </tr>
+    </table>
+</div>
+
+{%endblock%}
+

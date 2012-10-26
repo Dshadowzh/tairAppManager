@@ -1,0 +1,27 @@
+{%extends "base.html"%}
+
+{%block title%}{{groupname}}集群操作{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/' >应用</a> </li>
+<li> <a href='/cluster/' class='active' ><span>集群</span></a> </li>
+
+<li> <a href='/app/apply/' class='aplly'>我要申请</a> </li>
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class="boxA">
+  <div>
+    area:<input id="testarea"/>
+    quota:<input id="testquota"/>
+    <button type="button" id="alloc" >分配area</button>
+    <button type="button" id="modify" >修改quota</button>
+  </div>
+  <div>
+  <iframe frameborder=0 width="950px" height="500px" marginheight="0" marginwidth= "0" scrolling=yes src="{{monitor}}"></iframe>
+  </div>
+</div>
+
+{%endblock%}

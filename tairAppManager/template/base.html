@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>{%block title%}{%endblock%}</title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="no-cache" http-equiv="Pragma"/>
+  <meta content="4 May 2012 01:00:00 GMT" http-equiv="Expires"/>
+  
+  <link type="text/css" rel="stylesheet" href="/static/style/home.css"/>
+  <link type="text/css" rel="stylesheet" href="/static/style/modal.css"/>
+  {%block css%}{%endblock%}
+
+  <script src="/static/js/jquery.js"></script>
+  <script src="/static/js/jquery.dataTables.min.js"></script>
+  <script src="/static/js/main.js"></script>
+  {%block js%}{%endblock%}
+</head>
+
+<body>
+<div id="background">
+  <div id = "header">
+    <div class="wrapper">
+    <span>
+      <a href='/admin'>管理</a>
+      {% if username %}
+        <label>{{username}}</label>
+      {% else %}
+        {% if request.user %}
+        <label>{{request.user.name}}</label>
+        {% else %}
+          <a href='/accounts/login?next=/'>登陆</a>
+          <a href='/accounts/logged_out?next=/'>退出</a>
+        {% endif %}
+      {% endif %}
+      {%block header%}{%endblock%}
+      <a href='http://baike.corp.taobao.com/index.php/CS_RD/tair'>帮助</a>
+    </div>
+    </span>
+  </div>
+  <div class="clear"></div>
+
+  <div id = "nav">
+    <div class="wrapper">
+      {%block nav%}{%endblock%}
+      {%if apply%}
+      <div id='newapply'>
+        <a href='/app/apply'>我要申请</a> 
+      </div>
+      {%endif%}
+      {%block subnav%}{%endblock%}
+    </div>
+  </div>
+  <div class="clear"></div>
+
+  <div id="content">
+    <div class="wrapper">
+       {%block content%}{%endblock%}
+    </div>
+  </div>
+
+  <div id="footer">
+    <div class="wrapper">
+      <hr size="2" color="#ff9966" style="filter:alpha(opacity=10,finishopacity=100,style=1,startX=0,startY=0,finishX=100,finishY=100);width:490;"> 
+      <span style="font-family: 'Lucida Grande', Verdana, Arial, sans-serif; font-size: 12px;"> Taobao inc. copyright reseverd.  Powered by Django 1.4 </span>
+      <span id="feedback"><a href="/feedback">反馈</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

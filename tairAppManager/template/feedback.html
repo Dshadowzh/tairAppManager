@@ -1,0 +1,41 @@
+{%extends "base.html"%}
+
+{%block title%}Feedback{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/' >应用</a> </li>
+<li> <a href='/cluster/'>集群</a> </li>
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class="boxA">
+  <div class="boxB">
+    <div class="lbox">
+      <h1 style="text-align:center">  
+        ChangeLog
+      </h1>
+      <ul>
+        {% for log in logs%}
+        <li>
+          {{log.change}} <br/><span class="date" style="float:right;text-align:right">{{log.create_at}}</span>
+        </li><br/>
+        {%endfor%}
+      </ul>
+    </div>
+    <div class="rbox">
+      <h1 style="text-align:center">  
+        Feedback
+      </h1>
+      <ul>
+        {% for feedback in feedbacks%}
+        <li>
+          {{feedback.commet}}   {{feedback.username}}/{{feedback.create_at}}
+        </li>
+        {%endfor%}
+      </ul>
+    </div>
+  </div>
+</div>
+{%endblock%}

@@ -1,0 +1,124 @@
+
+$(function(){ 
+  var oTable = $('#app_table').dataTable({
+    //"bJQueryUI" : true, 
+    //从server获取app数据源
+    "sPaginationType" : "full_numbers",
+    "bProcessing": true,
+    //"bServerSide": true,    
+    //"sAjaxSource": "/app/json",  
+    //打开排序功能
+    "bSort" : true,  
+    "bStateSave" : true, 
+    "bRegex" : true, 
+
+    //对列的属性定义
+    "aoColumnDefs" : [ { 
+      "sClass" : "c0", 
+      "aTargets": [0]
+    }, { 
+      "sClass" : "c1", 
+      "aTargets": [1]
+    }, { 
+      "sClass" : "c2", 
+      "aTargets": [2]
+    }, { 
+      "sClass" : "c3", 
+      "aTargets": [3]
+    }, { 
+      "sClass" : "c4", 
+      "aTargets": [4]
+    }, { 
+      "sClass" : "c5", 
+      "aTargets": [5]
+    }, { 
+      "sClass" : "c6", 
+      "aTargets": [6]
+    }, { 
+      "sType": "numeric", 
+      "aTargets": [0]
+    }, {
+      "bSearchable" : true, 
+      "aTargets" : [0, 1, 3, 4, 5, 6] 
+    }, { 
+      "asSorting" : ["asc", "desc" ,"asc"], 
+      "aTargets" : [0, 1, 2, 3] 
+    }, { //哪些列容许排序
+      "bSortable" : true, 
+      "aTargets" : [0, 1, 2, 3] 
+    }, { 
+      "asSorting" : ["asc", "desc"], 
+      "aTargets" : [0, 1, 2, 3] 
+    }], 
+    "aLengthMenu" : [[10, 30, 50], ["10", "30", "50"]], 
+    "oLanguage" : { 
+      "sProcessing" : "数据读取中...",
+      "sLengthMenu" : "显示_MENU_条 ",
+      "sZeroRecords" : "没有您要搜索的内容",
+      "sInfo" : "从_START_ 到 _END_ 条记录 - 查询到的记录数为 _TOTAL_ 条",
+      "sInfoEmpty" : "记录数为0",
+      "sInfoFiltered" : "(全部记录数 _MAX_  条)",
+      "sInfoPostFix" : "",
+      "sSearch" : "搜索",
+      "sUrl" : "",
+      "oPaginate" : { 
+          "sFirst" : "|<<",
+          "sPrevious" : " < ", 
+          "sNext" : " > ", 
+          "sLast" : ">>|" 
+      },
+    } 
+  });
+  oTable.css({'width':"950px"});
+  
+  $("#apply img").click(function(){
+     var label=$(this).siblings("label");
+     label.show(); 
+  });
+  $("#apply input").focus(function(){
+     var label=$(this).siblings("label");
+     label.show(); 
+  });
+  $("#apply input").blur(function(){
+     var label=$(this).siblings("label");
+     label.hide(); 
+     //TODO :表单验证
+  });
+  $("#apply textarea").focus(function(){
+     $("#tip_describe").show();
+  });
+  $("#apply textarea").blur(function(){
+     $("#tip_describe").hide();
+  });
+
+
+  $("a.change_important").click(function(e){
+    apply_id=$(this).attr("name")
+    e.preventDefault();
+    $('#change_important_modal').modal("");
+    $('.important_submit').attr('name',apply_id)
+  });
+
+  $(".important_submit").click(function(){
+    app_id=$(this).attr("name");
+    ivalue = $("input:[name=important_radio]:radio:checked").val();
+    url="/app/"+app_id+"/setimportant/"
+    type= "i=" + ivalue;
+    $.ajax({
+      type:"POST",
+      url:url,
+      data:type,
+      //error: ajaxError,
+      error:function(a,textStatus,errorThrown){
+          alert(a.statusText+a.responseXML);
+      },
+      success:function(textStatus){
+        $.modal.close();
+        location.reload();
+      }
+    });
+    
+  });
+});
+
+

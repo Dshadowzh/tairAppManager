@@ -1,0 +1,113 @@
+{%extends "base.html"%}
+
+{%block js%}
+<script src="/static/js/simplemodal/jquery.simplemodal.js"> </script>
+{%endblock%}
+
+{%block css%}
+<style type="text/css" title="currentStyle">
+  @import "/static/style/demo_page.css";
+  @import "/static/style/demo_table.css";
+</style>
+{%endblock%}
+
+{%block title%}Tair应用管理系统{%endblock%}
+
+{%block header%}
+{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/' class='active'><span>应用</span></a> </li>
+<li> <a href='/cluster/' ><span>集群</span></a> </li>
+<li> <a href='/message/'><span>通知</span></a> </li>
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class='boxA'>
+  <table cellpadding="0" cellspacing="0" border="0" class="display" width="100%" id="app_table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>应用名称</th>
+        <th>应用场景</th>
+        <th>申请状态</th>
+        <th>申请人</th>
+        <th>集群</th>
+        <th>Namespace</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%for app in apps %}
+      <tr>
+          <td>{{app.id}}</td>
+          <td>{{app.name}}</td>
+          <td>{{app.apply.describe}}</td>
+          <td>{{app.status}}</td>
+          <td>{{app.apply.create_by_username}}</td>
+          <td>{% if app.review %} {{app.review.group.cluster.cluster_name}} {%endif%}</td>
+          <td>
+            {%if app.namespace %}
+              {{app.namespace}} 
+              {%ifequal app.important '待补充' %}
+                (<a name="{{app.id}}" class='change_important' rel="nofollow" href="javascript:void(0);">修改级别</a>)
+              {%else%}
+                ({{app.important}})
+              {%endifequal%}
+            {%endif%}
+          </td>
+          <td>
+            <a href="/app/{{app.id}}/edit">编辑</a>
+            {%if app.review%}
+<!--
+              <a href="/app/{{app.id}}/reviewedit">修改审批</a>
+-->
+            {%else%}
+              <a href="/app/{{app.id}}/review">审批</a>
+            {%endif%}
+           
+          </td>
+      </tr>
+      {%endfor%}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>ID</th>
+        <th>应用名称</th>
+        <th>应用场景</th>
+        <th>申请状态</th>
+        <th>申请人</th>
+        <th>集群</th>
+        <th>Namespace</th>
+        <th>操作</th>
+      </tr>
+    </tfoot>
+  </table> 
+  <div class="clear"></div>
+</div>
+
+<div id="change_important_modal">
+  <div class="change_imporant_wrapper">
+    <table>
+      <tr>
+        <td>请填写应用的重要程度: </td>
+        <td>
+          <input type="radio" name="important_radio" value="1">核心
+          <input type="radio" name="important_radio" checked="checked" value="2">非核心 &nbsp;&nbsp;<br/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        </td>
+        <td>
+          <input class="important_submit" style="float:right; margin-right:40px;" type="submit" value="提交"/> <br/>
+        </td>
+      </tr>
+      <tr><tr/>
+    </table>
+  </div>
+</div>
+{%endblock%}
+

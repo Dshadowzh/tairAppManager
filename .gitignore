@@ -1,0 +1,7 @@
+*.pyc
+.*.swp
+.*.swo
+site.err
+site.pid
+settings.py
+*.log

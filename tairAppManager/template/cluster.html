@@ -1,0 +1,49 @@
+{%extends "base.html"%}
+
+{%block js%}
+{%endblock%}
+
+{%block css%}
+<link type="text/css" rel="stylesheet" href="/static/style/demo_table.css"/>
+<link type="text/css" rel="stylesheet" href="/static/style/demo_page.css"/>
+{%endblock%}
+
+{%block title%}Tair Group 信息{%endblock%}
+
+{%block header%}
+{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/'><span>应用</span></a> </li>
+<li> <a href='/cluster/' class='active' ><span>集群</span></a> </li>
+<li> <a href='/app/apply/' class='aplly'>我要申请</a> </li>
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class="boxA">
+  <table cellpadding="0" cellspacing="0" border="0" class="display" width="100%" id="cluster_info">
+    <thead>
+      <tr>
+        <th>cluster/group</th>
+        <th>类型</th>
+        <th>config server</th>
+        <th>data server</th>
+        <th>应用数量</th>
+        <th>监控地址</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+          <td>{{group.app|linebreaks}}</td>
+      </tr>
+    </tbody>
+  </table> 
+  <div class="clear"></div>
+
+</div>
+
+{%endblock%}
+

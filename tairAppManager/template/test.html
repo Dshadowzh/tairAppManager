@@ -1,0 +1,27 @@
+{%extends "base.html"%}
+
+{%block title%}{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/' >应用</a> </li>
+<li> <a href='/cluster/'>集群</a> </li>
+
+<li> <a href='/app/apply/' class='aplly'>我要申请</a> </li>
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class="boxA">
+  <div>
+    area:<input id="testarea"/>
+    quota:<input id="testquota"/>
+    <button type="button" id="alloc" >分配area</button>
+    <button type="button" id="modify" >修改quota</button>
+  </div>
+  <div>
+  <iframe frameborder=0 width="950px" height="500px" marginheight="0" marginwidth= "0" scrolling=yes src="http://monitor.tair.taobao.net:8080/yuming_test/"></iframe>
+  </div>
+</div>
+
+{%endblock%}

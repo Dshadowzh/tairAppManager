@@ -1,0 +1,157 @@
+{%extends "base.html"%}
+
+{%block title%}Tair应用审批{%endblock%}
+
+{%block nav%}
+<ul>
+<li> <a href='/'>应用</a> </li>
+<li> <a href='/cluster/'>集群</a> </li>
+<!--
+<li> <a href='/message/'>通知</a> </li>
+-->
+
+</ul>
+{%endblock%}
+
+{%block content%}
+<div class="boxA">
+   <h2 style="text-align:middle;padding-top: 20px;margin-left: 50px;">  申请内容 </h2>
+      <table id='review_apply' cellpadding='5'> 
+        <tr>
+          <th><label for="id_name">应用名称:</label></th>
+          <td>
+            <input type="text" name="name" id="id_name" value="{{apply.name}}" readonly/>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_describe">应用描述:</label></th>
+          <td>
+            <textarea id="id_describe" rows="10" cols="40" name="describe" readonly>{{apply.describe}}</textarea>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_qps">访问次数:</label></th>
+          <td>
+            <input type="text" name="qps" id="id_qps" value="{{apply.qps}}" readonly/>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_capacity">预计容量(单位MB):</label></th>
+          <td>
+            <input type="text" name="capacity" id="id_capacity" value="{{apply.capacity}}" readonly/>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_cache_or_durable">是否需要持久化:</label></th>
+          <td>
+            <input type="checkbox" name="cache_or_durable" id="id_cache_or_durable" {%if not apply.cache_or_durable%}checked{%endif%} /> 
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_restful_api">是否使用Restful接口:</label></th>
+          <td>
+            <input type="checkbox" name="restful_api" id="id_restful_api" {%if apply.restful_api%}checked{%endif%} />
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_trade_critical">Tair故障是否影响交易:</label></th>
+          <td>
+            <input type="checkbox" name="trade_critical" id="id_trade_critical" {% if apply.trade_critical%}checked{%endif%} />
+          </td>
+          </tr>
+        <tr>
+          <th><label for="id_used_tair_before">是否已经使用Tair:</label></th>
+          <td>
+            <input type="checkbox" name="used_tair_before" id="id_used_tair_before" {%if apply.used_tair_before%}checked{%endif%} />
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_data_source">后方是否有数据源:</label></th>
+          <td>
+            <input type="checkbox" name="data_source" id="id_data_source"  {%if apply.data_source%}checked{%endif%}/>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_complicate_datastruct">是否需要使用set,list,map等数据结构:</label></th>
+          <td>
+            <input type="checkbox" name="complicate_datastruct" id="id_complicate_datastruct"  {%if apply.complicate_datastruct%}checked{%endif%}/>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_note">备注:</label></th>
+          <td> <textarea id="id_notes" rows="10" cols="40" name="notes">{{apply.notes}}</textarea></td>
+        </tr>
+        <!--
+        <tr>
+          <th><label for="id_get_none_key">是否大量访问不存在key:</label></th>
+          <td>
+            <input type="checkbox" name="get_none_key" id="id_get_none_key" {%if apply.get_none_key%} checked{%endif%}/>
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_two_cluster">是否需要部署双机房:</label></th>
+          <td>
+            <input type="checkbox" name="two_cluster" id="id_two_cluster" {%if apply.two_cluster%}checked{%endif%}/>
+          </td>
+        </tr>
+        <tr>
+        -->
+          <th></th>
+          <td>
+            {%if apply.create_by %}
+              {{apply.create_by.username}}于{{apply.create_at}}创建
+            {%else %}
+              {{apply.create_by_username}}于{{apply.create_at}}创建
+            {%endif %}
+            <br/>
+            {%if apply.modify_by %}
+              {{apply.modify_by.username}}于{{apply.modify_at}}修改
+            {%else %}
+              {{apply.modify_by_username}}于{{apply.modify_at}}修改
+            {%endif %}
+          </td>
+        </tr>
+
+      </table>
+  
+  <form id='review' action="." method="post" >
+  {% csrf_token %}
+  <h2>  请填写以下项目</h2>
+  <table  cellpadding='5'> 
+    <tr>{{form.errors}} </tr>
+    <tr>
+    <th>
+    <label for="id_group">选择集群:*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></th>
+    <td>
+    {{form.group}}
+    </td>
+    </tr>
+    <th><label for="id_namespace">NameSpace:*</label></th>
+    <td><input type="radio" name="autoalloc" checked="checked">手动分配</input><input type="text" name="namespace" id="id_namespace" /></td>
+    <!--
+    <td><input type="radio" name="autoalloc">自动分配</input></td>  
+    <td><input type="text" name="namespace" id="id_namespace" /></td>
+    -->
+    <label id="tip_namespace" class="tip">该namespace已使用</label></tr>
+<!--
+    <tr><th>
+    <label for="id_version">客户端版本:</label></th><td><input id="id_version" type="text" name="version" maxlength="30" /></td></tr>
+-->
+    <tr><th> <label for="id_quota">配额容量(MB):</label></th>
+      <td><input type="text" value="{{apply.capacity}}" name="quota" id="id_quota" /></td></tr>
+    <tr><th> <label for="id_status">申请状态:*</label></th>
+      <td><select name="status" id="id_status">
+        <option value="1">待审批</option>
+        <option value="2">已审批未部署</option>
+        <option value="3" selected="selected">已审批已部署</option>
+        <option value="4">拒绝</option>
+      </select></td>
+    </tr>
+  </table>
+  <input type="submit" value="完成审批"/>
+  <input name="{{apply.id}}" type="button" id="decline" value="拒绝申请"/>
+  </form>
+</div>
+
+{%endblock%}
+
