@@ -2,15 +2,19 @@
 
 from tairAppManager.cluster.models import Group, Cluster
 from tairAppManager.app.models import App, AppReview, AppApply
-from pytair.pytair import tairclient
+#from pytair.pytair import tairclient
+from tairAppManager.tair.tairclient import tairclient
 
 TAIR_SUCCESS, TAIR_FAILURE = 0, -1
 
 def allocNamespace(key, quota, group, app, ctype):
+  print group.cluster.master_1, group.cluster.slave_1, group.name, group.cluster.diamond, key, quota
+  #print "client start"
+  tc = tairclient(group.cluster.master_1, group.cluster.slave_1, group.name)
+  #tc = tairclient('10.249.199.174:5198', '10.249.199.184:5198', 'group_1')
+  #print "client ok"
+  new_area = tc.alloc_namespace(key, quota)
   try:
-    print group.cluster.master_1, group.cluster.slave_1, group.name, group.cluster.diamond
-    tc = tairclient(group.cluster.master_1, group.cluster.slave_1, group.name)
-    new_area = tc.alloc_namespace(key, quota)
     # new appreview
     review = AppReview(group=group, 
         namespace=new_area, version='', quota=quota ,

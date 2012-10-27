@@ -23,7 +23,7 @@ def getgroup(data):
 
 def findGroupAuto(ctype):
   if ctype == "mdb":
-    return findGroup("yuming_test", "group_1")
+    return findGroup("aliyun_ace_test", "group_1")
   if ctype == "rdb":
     pass
   if ctype == "ldb":

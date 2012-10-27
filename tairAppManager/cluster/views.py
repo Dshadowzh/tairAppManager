@@ -70,7 +70,6 @@ def checkNamespace(request, group_id):
       return HttpResponse(json.dumps({'error':'Group Not Found'}))
 
 def getTest(request):
-  group_info = Group.objects.get(pk=47)
   if request.method == 'GET':
     return render_to_response('test.html', context_instance=RequestContext(request))
 
