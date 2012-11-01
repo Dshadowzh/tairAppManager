@@ -60,11 +60,18 @@ def getClusterInfo(group, area, quota):
     return (TAIR_FAILURE, e)
 
 def setQuota(area, quota, group, app):
+  print "xx"
   try:
+    print "0"
     tc = tairclient(group.cluster.master_1, group.cluster.slave_1, group.name)
+    print "0"
     tc.modify_quota(area, quota)
+    print "1"
     review = app.review
-    review.set_quota(quota)
+    print "2"
+    review.quota = quota
+    review.save()
+    print "3"
     return TAIR_SUCCESS
   except:
     return TAIR_FAILURE
@@ -82,7 +89,8 @@ def deleteQuota(area, group, app):
 def getAreaStat(area, group, app):
   try:
     tc = tairclient(group.cluster.master_1, group.cluster.slave_1, group.name)
-    tc.get_stat(area, 0)
+    stat = tc.get_stat(area)
+    print stat
     return (TAIR_SUCCESS, stat)
   except:
     return (TAIR_FAILURE, "error")

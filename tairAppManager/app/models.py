@@ -127,7 +127,7 @@ class App(models.Model):
 
   apply = models.ForeignKey("AppApply")  
 
-  review = models.ForeignKey("AppReview",blank=True,null=True)
+  review = models.ForeignKey("AppReview",blank=True,null=True, on_delete=models.SET_NULL)
   
   #def modify_app():
   #  pass

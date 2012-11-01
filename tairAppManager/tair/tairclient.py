@@ -21,7 +21,8 @@ tair_return_patten={
 class tairclient:
     def __init__(self, master, slave, group, area = 0, client="/home/admin/tair/sbin/tairclient"):
         self.area = area
-        self.cmd_base = "%s -c %s -g %s"%(client, master, group)
+        #self.cmd_base = "%s -c %s -g %s"%(client, master, group)
+        self.cmd_base = [client, '-c', master, '-g', group, '-l']
         
     def __del__(self):
         pass
@@ -35,54 +36,73 @@ class tairclient:
     def remove(self, key):
         pass
 
-
     def alloc_namespace(self, key, quota):
-        cmd = '%s -l "alloc_namespace %s %s"'%(self.cmd_base, key, quota)
-        print cmd
+          #cmd_c=["/home/admin/tair/sbin/tairclient", "-c", "10.249.199.174:5198", "-g", "group_1", "-l", "alloc_namespace sdiii 123"]
+        cmd = ['alloc_namespace %s %d'%(key, quota)]
         try:
-          s = Popen(shlex.split(cmd), stdout=PIPE, stderr=STDOUT)
+          s = Popen(self.cmd_base + cmd, stdout=PIPE, stderr=PIPE)
+        except OSError:
+          print "popen oserror", e
+          return -1
         except e:
           print "popen error", e
           return -1
-        output = s.stdout.read() 
-        print output
-        if re.match(tair_return_patten["error"], output):
-            print output
-            return -1
-        if re.match(tair_return_patten["alloc"], output):
-            return re.match(tair_return_patten["alloc"], output).groups()[0]
+
+        (output, stderr) = s.communicate() 
+        #print "output:", output, "stderr:", stderr
+        if re.match(tair_return_patten["error"], stderr):
+          print stderr
+          return -1
+        if re.match(tair_return_patten["alloc"], stderr):
+          return re.match(tair_return_patten["alloc"], stderr).groups()[0]
         print "unknown error"
         return -1
 
     def modify_quota(self, key, quota):
-      cmd = '%s -l "modify_quota %s %s"'%(self.cmd_base, key, quota)
-      print cmd
-      s = Popen(shlex.split(cmd), stdout=PIPE, stderr=STDOUT)
-      output = s.stdout.read() 
-      print output
-      if re.match(tair_return_patten["error"], output):
+        cmd = ['modify_quota %s %d'%(key, quota)]
+        try:
+          s = Popen(self.cmd_base + cmd, stdout=PIPE, stderr=PIPE)
+        except OSError:
+          print "popen oserror", e
+          return -1
+        except e:
+          print "popen error", e
+          return -1
+
+        (output, stderr) = s.communicate() 
+        #print "output:", output, "stderr:", stderr
+        if re.match(tair_return_patten["error"], stderr):
+          return -1
+        if re.match(tair_return_patten["modify"], stderr):
+          return 0
+        print "unknown error"
         return -1
-      if re.match(tair_return_patten["modify"], output):
-        return 0
-      return -1
 
     def get_stat(self, key):
-      cmd = '%s -l "stat"'%(self.cmd_base)
-      print cmd
-      s = Popen(shlex.split(cmd), stdout=PIPE, stderr=STDOUT)
-      output = s.stdout.read()  
-      patten = ".*area\((?P<area>\d+)\)\s+%s,(?P<quota>\d+).*"%(key)
-      res = re.search(patten, output)
-      stat = ["0"] *8
-      if res:
-        area = res.groups()[0]
-        quota = res.groups()[0]
-        patten2 = "\n%s \w+ (\d+)"%area
-        r = re.compile(patten2)
-        for (i, match) in enumerate(r.finditer(output)):
-            stat[i]= match.groups()[0]
-        print stat
-      return {"areaKey":key, "area":area, "quota":quota, "stat":{"dataSize":stat[0], "evictCount":stat[1], "getCount":stat[2], "hitCount":stat[3], "itemCount":stat[4], "putCount":stat[5], "removeCount":stat[6], "useSize":stat[7]}}
+        cmd = ['stat']
+        try:
+          s = Popen(self.cmd_base + cmd, stdout=PIPE, stderr=PIPE)
+        except OSError:
+          print "popen oserror", e
+          return -1
+        except e:
+          print "popen error", e
+          return -1
+
+        (output, stderr) = s.communicate() 
+        #print "output:", output, "stderr:", stderr
+        patten = ".*area\((?P<area>\d+)\)\s+%s,(?P<quota>\d+).*"%(key)
+        res = re.search(patten, stderr)
+        stat = ["0"] *8
+        area = -1
+        if res:
+            area = res.groups()[0]
+            quota = res.groups()[0]
+            patten2 = "\n%s \w+ (\d+)"%area
+            r = re.compile(patten2)
+            for (i, match) in enumerate(r.finditer(stderr)):
+                stat[i]= match.groups()[0]
+        return {"areaKey":key, "area":area, "quota":quota, "stat":{"dataSize":stat[0], "evictCount":stat[1], "getCount":stat[2], "hitCount":stat[3], "itemCount":stat[4], "putCount":stat[5], "removeCount":stat[6], "useSize":stat[7]}}
 
 def test():
     tc = tairclient('10.249.199.174:5198', 

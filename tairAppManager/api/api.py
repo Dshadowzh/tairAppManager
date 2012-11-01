@@ -44,6 +44,7 @@ def findGroup(clustername, groupname):
 
 @csrf_exempt
 def area(request, area_key):
+  print "xxx"
   if request.method == 'POST':
     ctype = request.POST.get("type", "")
     quota = request.POST.get("quota", -1)
@@ -102,9 +103,7 @@ def area(request, area_key):
     #cs_2 = request.POST.get("cs2", None)
     #group = request.POST.get("group", None)
     #cluster_id = request.POST.get("cluster", -1)
-    print "hello"
     if ctype == 'cluster':
-      print  "hello2"
       g = findGroupAuto("mdb")
       if g == None:
         return HttpResponseNotFound("suitable group not found!")
@@ -119,18 +118,17 @@ def area(request, area_key):
       else :
         return HttpResponseNotFound("area cluster info not found!")
     if ctype == 'stat':
-      print "hello3"
       app = App.objects.filter(name=area_key)
       if (app.count() == 0):
         return HttpResponseNotFound("area key not existed!")
       if not app[0].review:
         return HttpResponseNotFound("area key not reviewed!")
       group = app[0].review.group
-      (ret, res) = getAreaStat(key, group, app)
+      (ret, res) = getAreaStat(area_key, group, app)
       if ret == TAIR_SUCCESS: 
         return HttpResponse(json.dumps(res))
       else :
-        return HttpResponseNotFound("area key not existed!")
+        return HttpResponseNotFound("area key get stat failed!")
     return HttpResponse("please indicate type")
     
 
@@ -140,12 +138,22 @@ def area(request, area_key):
       return HttpResponseNotFound("area key not existed!")
     if not app[0].review:
       return HttpResponseNotFound("area key not reviewed!")
-    ret = setQuota(area_key, quota, group, app)
+    group = app[0].review.group
+    print 'xxx', area_key
+    ret = setQuota(area_key, 0, group, app[0])
     if ret == TAIR_SUCCESS: 
-      app[0].review.delete()
-      app[0].apply.delete()
-      app[0].delete()
-      return HttpResponse(json.dumps(res))
+      review = app[0].review
+      apply = app[0].apply
+      try:
+        if review:
+          print 's2reveiw'
+          review.delete()
+        if apply:
+          print 's2apply'
+          apply.delete()
+      except e:
+        print e
+      return HttpResponse(json.dumps(ret))
     else :
       return HttpResponseNotFound("area key delete failed!")
   

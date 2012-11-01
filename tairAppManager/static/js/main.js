@@ -164,6 +164,23 @@ $(document).ready(function(){
     });
   });
 
+  $("#delete").click(function(e){
+    area = $("#testarea").val();
+    url="/openapi/area/"+area;
+    alert(url);
+    $.ajax({
+      type:"DELETE",
+      url:url,
+      dataType: "json",
+      error:function(a,textStatus,errorThrown){
+          alert('error! '+a.statusText+a.responseXML);
+      },
+      success:function(data, textStatus){
+          alert("OK");
+      }
+    });
+  });
+
   //分配新的area
   $("#alloc").click(function(e){
     area = $("#testarea").val();

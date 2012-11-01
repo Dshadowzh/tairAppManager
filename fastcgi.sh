@@ -1,12 +1,12 @@
 #!/bin/bash
 
-PROJDIR="/home/yuming.zh/python/tairAppManager_work"
+PROJDIR="/root/tairAppManager"
 PIDFILE="$PROJDIR/site.pid"
 SOCKET="$PROJDIR/site.sock"
 LOGFILE="$PROJDIR/site.log"
 ERRFILE="$PROJDIR/site.err"
 #SOCKET="/tmp/mysite.sock"
-PYTHON="/usr/bin/python"
+PYTHON="/home/tops/bin/python2.7"
 
 cd $PROJDIR
 if [ -f $PIDFILE ]; then
